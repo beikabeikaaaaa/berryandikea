@@ -7,12 +7,23 @@
   <link href="style.css" rel="stylesheet" />
 </head>
 <body>
+  <!-- soft paw background layer -->
+  <div class="bg-paws" id="bgPaws" aria-hidden="true"></div>
+
   <main class="wrap">
-    <h1 class="title">Two-Sentence Story</h1>
+    <header class="header">
+      <div class="brand">
+        <span class="dog">🐶</span>
+        <span class="name">Berry &amp; Ikea</span>
+        <span class="dog">🐶</span>
+      </div>
+      <p class="tag">Two best buddies, one tiny phone world.</p>
+    </header>
+
     <p class="story">
       <span class="s1">My lock screen is guarded by Berry and Ikea.</span>
       <span class="divider">/</span>
-      <span class="s2">Unlock, and they’re still here—the best welcome home.</span>
+      <span class="s2">Unlock, and they’re still here—tail-wagging, watching squirrels together.</span>
     </p>
 
     <!-- iPhone mockup -->
@@ -28,7 +39,7 @@
               <div class="time" id="timeNow">09:41</div>
               <div class="date" id="dateNow">Tue, Sep 16</div>
             </div>
-            <div class="hint" id="slideHint">Drag right to meet Berry & Ikea ⟶</div>
+            <div class="hint" id="slideHint">Drag right to meet Berry &amp; Ikea ⟶</div>
             <div class="slider">
               <div class="knob" id="knob"></div>
               <div class="track"></div>
@@ -47,8 +58,12 @@
 
         <div class="homebar" aria-hidden="true"></div>
       </div>
-      <p class="caption">Drag right to unlock (or press Space). After unlock, click for paw prints.</p>
+      <p class="caption">Drag right to unlock (or press Space). After unlock, click for big paw prints.</p>
     </section>
+
+    <footer class="footer">
+      <span>Made with ❤️ for Berry &amp; Ikea</span>
+    </footer>
   </main>
 
   <script src="script.js"></script>

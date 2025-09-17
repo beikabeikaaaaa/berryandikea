@@ -1,55 +1,68 @@
 *{box-sizing:border-box}
 :root{
-  --bg:#0b0f15; --fg:#e9eef7; --muted:#9fb0c6; --accent:#57a9ff;
+  --bg1:#FFF6E9; --bg2:#FFE7D1; --bg3:#FFD8C2;
+  --fg:#5a5046; --muted:#8b7f73; --accent:#ff9f66; --accent2:#ffc67b;
+  --glass:#ffffffaa; --glass-br:#ffd9b8;
 }
 html,body{height:100%}
 body{
-  margin:0; background: radial-gradient(1200px 600px at 70% -10%, #132236 0%, #0b0f15 60%, #070b10 100%);
-  color:var(--fg); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+  margin:0;
+  background: radial-gradient(1000px 500px at 70% -10%, var(--bg2) 0%, var(--bg1) 50%, var(--bg3) 100%);
+  color:var(--fg);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Inter, Arial, sans-serif;
+  overflow-x:hidden;
 }
-.wrap{min-height:100svh; padding:clamp(16px,4vw,40px); display:flex; flex-direction:column; align-items:center; gap:14px}
-.title{margin:0; font-size:clamp(20px,3vw,28px)}
-.story{margin:0 0 8px; color:var(--muted); text-align:center; font-size:clamp(14px,2.2vw,18px)}
+.bg-paws{position:fixed; inset:0; pointer-events:none; z-index:0; opacity:.12}
+
+.wrap{position:relative; z-index:1; min-height:100svh; padding:clamp(16px,4vw,40px); display:flex; flex-direction:column; align-items:center; gap:16px}
+.header{display:flex; flex-direction:column; align-items:center; gap:6px}
+.brand{display:flex; align-items:center; gap:10px; padding:8px 14px; border-radius:999px; background:var(--glass); border:1px solid var(--glass-br); box-shadow:0 12px 30px rgba(0,0,0,.08)}
+.brand .name{font-weight:700; letter-spacing:.2px}
+.tag{margin:0; color:var(--muted); font-size:14px}
+
+.story{margin:4px 0 8px; color:var(--muted); text-align:center; font-size:clamp(14px,2.2vw,18px)}
 .story .divider{opacity:.35; margin:0 .5em}
 
 .iphone{display:flex; flex-direction:column; align-items:center; gap:12px}
 .iphone-body{
-  width:min(340px,92vw); aspect-ratio:9/19.5; border-radius:28px;
-  background:linear-gradient(145deg,#1c2633,#0e141c);
-  box-shadow:0 18px 50px rgba(0,0,0,.45), inset 0 0 0 2px rgba(255,255,255,.06), inset 0 0 0 10px #000000cc;
+  width:min(360px,92vw); aspect-ratio:9/19.5; border-radius:28px;
+  background:linear-gradient(145deg,#f1d8c2,#efc6a5);
+  box-shadow:0 18px 50px rgba(209,140,92,.35), inset 0 0 0 2px rgba(255,255,255,.45), inset 0 0 0 10px #fff6;
   padding:18px; position:relative; display:grid; place-items:center;
 }
 .notch{position:absolute; top:8px; width:48%; height:24px; background:#000; border-bottom-left-radius:16px; border-bottom-right-radius:16px; display:flex; align-items:center; justify-content:center; gap:10px}
 .notch .cam{width:8px;height:8px;border-radius:50%;background:radial-gradient(circle at 30% 30%, #0ff, #004 60%, #000 80%)}
 .notch .spk{width:40px;height:6px;border-radius:10px;background:#141414}
 
-.screen{width:100%; height:100%; border-radius:18px; overflow:hidden; background:#000; position:relative; isolation:isolate}
+.screen{width:100%; height:100%; border-radius:18px; overflow:hidden; background:#000; position:relative; isolation:isolate; border:1px solid #0008}
 .layer{position:absolute; inset:0; display:grid; place-items:center}
-.layer img{width:100%; height:100%; object-fit:cover; filter:brightness(.92) contrast(1.05)}
+.layer img{width:100%; height:100%; object-fit:cover; filter:brightness(.98) contrast(1.04) saturate(1.05)}
 
-.lock .clock{position:absolute; top:18%; text-align:center; text-shadow:0 8px 24px rgba(0,0,0,.5)}
-.lock .time{font-size:44px; font-weight:700}
-.lock .date{opacity:.9}
-.hint{position:absolute; bottom:76px; background:#0b1624b3; padding:8px 12px; border:1px solid #294463; border-radius:999px; font-size:13px; color:#cfe2ff; backdrop-filter:blur(4px)}
-.slider{position:absolute; bottom:26px; left:50%; transform:translateX(-50%); width:76%; height:28px}
-.track{position:absolute; inset:0; border-radius:999px; background:#1d2a3b; opacity:.85}
-.knob{position:absolute; top:50%; transform:translate(0,-50%); left:4px; width:38px; height:22px; border-radius:999px; background:linear-gradient(#7bb6ff,#4e97ff); box-shadow:0 6px 18px rgba(87,169,255,.45)}
+.lock .clock{position:absolute; top:18%; text-align:center; text-shadow:0 8px 24px rgba(0,0,0,.5); color:#fffef9}
+.lock .time{font-size:44px; font-weight:800}
+.lock .date{opacity:.95}
+.hint{position:absolute; bottom:76px; background:#fff6; padding:8px 12px; border:1px solid #ffffffaa; border-radius:999px; font-size:13px; color:#2b2018; backdrop-filter:blur(6px)}
+.slider{position:absolute; bottom:26px; left:50%; transform:translateX(-50%); width:76%; height:30px}
+.track{position:absolute; inset:0; border-radius:999px; background:#ffffff55; box-shadow:inset 0 0 0 1px #fff8}
+.knob{position:absolute; top:50%; transform:translate(0,-50%); left:4px; width:46px; height:26px; border-radius:999px; background:linear-gradient(180deg, var(--accent), var(--accent2)); box-shadow:0 6px 18px rgba(255,159,102,.45)}
 
 .home{opacity:0; pointer-events:none; transition:opacity .35s ease}
 .home.active{opacity:1; pointer-events:auto}
 .home img{filter:none}
-.dock{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); background:#0b1624b3; border:1px solid #294463; color:#d7e7ff; padding:6px 10px; border-radius:10px; font-size:12px}
+.dock{position:absolute; bottom:12px; left:50%; transform:translateX(-50%); background:#fff6; border:1px solid #ffffffaa; color:#2b2018; padding:6px 10px; border-radius:10px; font-size:12px; backdrop-filter:blur(6px)}
 
-.homebar{position:absolute; bottom:10px; left:50%; transform:translateX(-50%); width:34%; height:4px; border-radius:999px; background:#2b3645; opacity:.85}
-.caption{margin:0; color:#a8b6c9; font-size:13px}
+.homebar{position:absolute; bottom:10px; left:50%; transform:translateX(-50%); width:34%; height:4px; border-radius:999px; background:#2b364522; opacity:.85}
+.caption{margin:0; color:var(--muted); font-size:13px}
+.footer{margin-top:auto; color:var(--muted); font-size:12px}
 
 .fx{position:absolute; inset:0; pointer-events:none}
-.ripple{position:absolute; width:12px; height:12px; border-radius:999px; background:radial-gradient(circle, rgba(87,169,255,.7) 0%, rgba(87,169,255,.15) 40%, rgba(87,169,255,0) 70%); transform:translate(-50%,-50%) scale(1); animation:ripple 650ms ease-out forwards; mix-blend-mode:screen}
+.ripple{position:absolute; width:18px; height:18px; border-radius:999px; background:radial-gradient(circle, rgba(255,183,120,.7) 0%, rgba(255,183,120,.15) 40%, rgba(255,183,120,0) 70%); transform:translate(-50%,-50%) scale(1); animation:ripple 650ms ease-out forwards; mix-blend-mode:screen}
 @keyframes ripple{to{transform:translate(-50%,-50%) scale(12); opacity:0}}
 
-.paw{position:absolute; font-size:18px; transform:translate(-50%,-50%); animation:paw 900ms ease-out forwards}
+/* Bigger, cozier paw effect */
+.paw{position:absolute; font-size:34px; transform:translate(-50%,-50%); animation:paw 1100ms ease-out forwards}
 @keyframes paw{
-  0%{opacity:.95; transform:translate(-50%,-50%) scale(.9)}
-  60%{transform:translate(-50%,-110%) scale(1.15)}
-  100%{opacity:0; transform:translate(-50%,-160%) scale(1)}
+  0%{opacity:.95; transform:translate(-50%,-50%) scale(.9) rotate(-6deg)}
+  60%{transform:translate(-50%,-100%) scale(1.2) rotate(6deg)}
+  100%{opacity:0; transform:translate(-50%,-160%) scale(1) rotate(0deg)}
 }
