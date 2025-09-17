@@ -1,9 +1,8 @@
-// script.js
-// Images are in the REPO ROOT (no assets/ folder)
-const LOCK_IMG_SRC = "./berryikea_lock.jpg";
-const HOME_IMG_SRC = "./berryikea_home.jpg";
+// Images in repo ROOT
+const LOCK_IMG_SRC = "./ikeaberry.png";
+const HOME_IMG_SRC = "./back.png";
 
-// Pick the nodes we need
+// Elements
 const screenEl = document.getElementById("screen");
 const lockLayer = document.getElementById("lockLayer");
 const homeLayer = document.getElementById("homeLayer");
@@ -14,12 +13,23 @@ const slideHint = document.getElementById("slideHint");
 const fx = document.getElementById("fx");
 const s1 = document.querySelector(".s1");
 const s2 = document.querySelector(".s2");
+const homebar = document.getElementById("homebar");
+const lockBackBtn = document.getElementById("lockBackBtn");
 
-// Add a cache-buster to avoid stale images on Pages
+// Camera
+const camBtn = document.getElementById("camBtn");
+const camOverlay = document.getElementById("camera");
+const videoEl = document.getElementById("video");
+const shutterBtn = document.getElementById("shutter");
+const closeCamBtn = document.getElementById("closeCam");
+const shotCanvas = document.getElementById("shot");
+let mediaStream = null;
+
+// Load images (cache-busting)
 lockImg.src = LOCK_IMG_SRC + "?v=" + Date.now();
 homeImg.src = HOME_IMG_SRC + "?v=" + Date.now();
 
-// Lock screen clock
+// Lock clock (iOS18 big)
 const tNow = document.getElementById("timeNow");
 const dNow = document.getElementById("dateNow");
 function refreshClock(){
@@ -29,7 +39,7 @@ function refreshClock(){
 }
 refreshClock(); setInterval(refreshClock, 1000);
 
-// Drag-to-unlock
+// ---- Unlock via knob (still works) ----
 let dragging=false,startX=0,knobX=0;
 const knobMin=4;
 const trackWidth = () => lockLayer.querySelector(".slider").clientWidth;
@@ -55,24 +65,111 @@ window.addEventListener("pointerup",()=>{
   if(knobX>=unlockThreshold()) doUnlock();
   else {knobX=knobMin; knob.style.left=knobX+'px'; slideHint.style.opacity=1;}
 });
+
+// ---- Full-screen edge swipe to unlock (mobile friendly) ----
+let swipeActive=false, swipeStartX=0, swipeStartY=0;
+const SWIPE_EDGE = 0.25;     // must start within left 25% of screen
+const SWIPE_DISTANCE = 0.5;  // need to move over 50% width
+const SWIPE_SLOP = 70;       // ignore if vertical move too large
+
+lockLayer.addEventListener("pointerdown",(e)=>{
+  const rect = lockLayer.getBoundingClientRect();
+  const x = (e.clientX ?? e.touches?.[0]?.clientX) - rect.left;
+  const y = (e.clientY ?? e.touches?.[0]?.clientY) - rect.top;
+  if(x <= rect.width * SWIPE_EDGE){ swipeActive = true; swipeStartX = x; swipeStartY = y; }
+});
+lockLayer.addEventListener("pointermove",(e)=>{
+  if(!swipeActive) return;
+  const rect = lockLayer.getBoundingClientRect();
+  const x = (e.clientX ?? e.touches?.[0]?.clientX) - rect.left;
+  const y = (e.clientY ?? e.touches?.[0]?.clientY) - rect.top;
+  if(Math.abs(y - swipeStartY) > SWIPE_SLOP){ swipeActive=false; return; }
+  const progress = Math.max(0, Math.min(1, (x - swipeStartX) / (rect.width * SWIPE_DISTANCE)));
+  const kx = knobMin + (knobMax()-knobMin) * progress;
+  knob.style.left = kx + 'px';
+  slideHint.style.opacity = Math.max(0, 1 - progress);
+});
+lockLayer.addEventListener("pointerup",(e)=>{
+  if(!swipeActive) return; swipeActive=false;
+  const rect = lockLayer.getBoundingClientRect();
+  const endX = (e.clientX ?? e.touches?.[0]?.clientX) - rect.left;
+  const dist = endX - swipeStartX;
+  if(dist >= rect.width * SWIPE_DISTANCE) doUnlock();
+  else { knob.style.left = knobMin + 'px'; slideHint.style.opacity = 1; }
+});
+
+// ---- Keyboard shortcuts ----
 window.addEventListener("keydown",(e)=>{
   if(e.code==='Space' && !homeLayer.classList.contains('active')) doUnlock();
+  if(e.code==='KeyL') reLock(); // return to lock
 });
+
+// Long-press homebar to relock (mobile)
+let holdTimer=null;
+homebar.addEventListener("pointerdown", ()=>{
+  if(!homeLayer.classList.contains('active')) return;
+  holdTimer = setTimeout(()=> reLock(), 600);
+});
+homebar.addEventListener("pointerup", ()=> clearTimeout(holdTimer));
+homebar.addEventListener("pointerleave", ()=> clearTimeout(holdTimer));
+
+// Button to relock
+lockBackBtn.addEventListener("click", reLock);
+
+// ---- State ----
 function doUnlock(){
   homeLayer.classList.add("active");
-  s1.style.color="#8b7f73";
-  s2.style.color="#5a5046";
+  s1.style.color="#7b6f64";
+  s2.style.color="#2b2018";
   lockLayer.style.opacity=0;
   confettiHearts(); setTimeout(()=>confettiPaws(),250);
 }
+function reLock(){
+  homeLayer.classList.remove("active");
+  lockLayer.style.opacity=1;
+  knobX = knobMin; knob.style.left = knobX + 'px';
+  slideHint.style.opacity = 1;
+}
 
-// Click effects after unlock
+// ---- Camera: lock screen quick capture ----
+camBtn.addEventListener("click", async ()=>{
+  try{
+    mediaStream = await navigator.mediaDevices.getUserMedia({video:true, audio:false});
+    videoEl.srcObject = mediaStream;
+    camOverlay.classList.add("active");
+  }catch(err){
+    alert("Camera permission denied or unavailable.");
+  }
+});
+closeCamBtn.addEventListener("click", ()=>{
+  if(mediaStream){
+    mediaStream.getTracks().forEach(t=>t.stop());
+    mediaStream = null;
+  }
+  camOverlay.classList.remove("active");
+  shotCanvas.style.display = "none";
+  videoEl.style.display = "block";
+});
+shutterBtn.addEventListener("click", ()=>{
+  if(!mediaStream) return;
+  const ctx = shotCanvas.getContext("2d");
+  const vw = videoEl.videoWidth, vh = videoEl.videoHeight;
+  shotCanvas.width = vw; shotCanvas.height = vh;
+  ctx.drawImage(videoEl, 0, 0, vw, vh);
+  // show snapshot
+  videoEl.style.display = "none";
+  shotCanvas.style.display = "block";
+  setTimeout(()=>{ // return to live preview
+    shotCanvas.style.display = "none";
+    videoEl.style.display = "block";
+  }, 1000);
+});
+
+// ---- Effects ----
 screenEl.addEventListener("pointerdown",(e)=>{
   ripple(e);
   if(homeLayer.classList.contains("active")){
-    for(let i=0;i<3;i++){
-      setTimeout(()=>spawnPaw(e), i*80);
-    }
+    for(let i=0;i<3;i++) setTimeout(()=>spawnPaw(e), i*80);
   }
 });
 function ripple(e){
@@ -99,8 +196,6 @@ function spawnPaw(e){
   fx.appendChild(p);
   p.addEventListener("animationend",()=>p.remove());
 }
-
-// Simple confetti
 function confettiHearts(){
   for(let i=0;i<12;i++){
     setTimeout(()=>{

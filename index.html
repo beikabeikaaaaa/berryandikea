@@ -2,13 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Berry & Ikea — Two-Sentence Story</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Berry & Ikea — iOS18 Style Story</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <link href="style.css" rel="stylesheet" />
 </head>
 <body>
   <main class="wrap">
-    <h1 class="title">Two-Sentence Story</h1>
+    <h1 class="sr-only">Berry & Ikea — Two-Sentence Story</h1>
     <p class="story">
       <span class="s1">My lock screen is guarded by Berry and Ikea.</span>
       <span class="divider">/</span>
@@ -18,27 +18,59 @@
     <section class="iphone">
       <div class="iphone-body">
         <div class="notch"><span class="cam"></span><span class="spk"></span></div>
-        <div class="screen" id="screen">
+
+        <div class="screen" id="screen" aria-label="iPhone screen">
+          <!-- LOCK -->
           <div class="layer lock" id="lockLayer">
             <img id="lockImg" alt="Lock screen dogs" draggable="false" />
-            <div class="clock">
+            <div class="lock-overlay"></div>
+
+            <div class="clock ios18">
               <div class="time" id="timeNow">09:41</div>
               <div class="date" id="dateNow">Tue, Sep 16</div>
             </div>
-            <div class="hint" id="slideHint">Drag right to meet Berry &amp; Ikea ⟶</div>
-            <div class="slider"><div class="knob" id="knob"></div><div class="track"></div></div>
+
+            <div class="lock-actions">
+              <button id="camBtn" class="pill">📷</button>
+              <div class="hint" id="slideHint">Swipe from left edge to unlock ⟶</div>
+            </div>
+
+            <div class="slider">
+              <div class="knob" id="knob" aria-label="Drag to unlock" role="button"></div>
+              <div class="track"></div>
+            </div>
           </div>
-          <div class="layer home" id="homeLayer">
+
+          <!-- HOME -->
+          <div class="layer home" id="homeLayer" aria-live="polite">
             <img id="homeImg" alt="Home screen dogs" draggable="false" />
             <div class="dock">🐾 Tap to celebrate</div>
+            <button class="lockback" id="lockBackBtn" title="Return to Lock (L)">⌁ Lock</button>
           </div>
+
+          <!-- CAMERA OVERLAY -->
+          <div class="camera" id="camera">
+            <video id="video" autoplay playsinline></video>
+            <div class="cam-controls">
+              <button id="shutter">●</button>
+              <button id="closeCam">✕</button>
+            </div>
+            <canvas id="shot" class="shot" width="720" height="1280"></canvas>
+          </div>
+
+          <!-- FX -->
           <div class="fx" id="fx"></div>
         </div>
-        <div class="homebar" aria-hidden="true"></div>
+
+        <div class="homebar" id="homebar" aria-hidden="false" title="Hold to Lock"></div>
       </div>
-      <p class="caption">Drag to unlock (or press Space). Click for paw prints.</p>
+
+      <p class="caption">
+        Mobile: swipe from the left edge to unlock. Press <kbd>L</kbd> to return to lock. Space also unlocks.
+      </p>
     </section>
   </main>
+
   <script src="script.js"></script>
 </body>
 </html>
