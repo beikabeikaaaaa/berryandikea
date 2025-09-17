@@ -1,6 +1,6 @@
 // ------ Replace paths with your filenames if needed ------
-const LOCK_IMG_SRC = "assets/berryikea_lock.jpg";  // 锁屏
-const HOME_IMG_SRC = "assets/berryikea_home.jpg";  // 解锁
+const LOCK_IMG_SRC = "berryikea_lock.jpg";  // 锁屏
+const HOME_IMG_SRC = "berryikea_home.jpg";  // 解锁
 // --------------------------------------------------------
 
 const screenEl = document.getElementById("screen");
